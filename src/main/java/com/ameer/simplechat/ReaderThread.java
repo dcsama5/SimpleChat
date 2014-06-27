@@ -17,11 +17,17 @@ import java.net.Socket;
  *  This class is a thread that sets up an InputStream between 2 sockets
  * @author ameer
  */
-import java.io.StringWriter;
 public class ReaderThread implements Runnable {
     
     InputStream in;
     BufferedReader reader;
+    
+    /**
+     * public ReaderThread constructor which initialises the input stream to read
+     * from the client side. 
+     * @param connection
+     * @throws IOException 
+     */
     public ReaderThread(Socket connection) throws IOException
     {
         in = connection.getInputStream();
@@ -30,16 +36,23 @@ public class ReaderThread implements Runnable {
     
     public void run()
     {
-        StringWriter writer = new StringWriter();
+        String message = null;
         while(true) {
         try {
                 System.out.println("HI");
-                String message = reader.readLine();
+                message = reader.readLine();
                 System.out.println(message);
         }
-        catch(IOException io)
+        catch(Exception io)
         {
-           System.err.println("could not send message \n "+io); 
+            try {
+            reader.close();
+            break;
+            }
+            catch(IOException ex)
+            {
+                ex.printStackTrace();
+            }
         }
         }
     }

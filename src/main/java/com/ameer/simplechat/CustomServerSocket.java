@@ -38,7 +38,6 @@ public class CustomServerSocket extends ServerSocket{
         }
             Socket s = new CustomSocket();
             implAccept(s);
-            System.out.println("Hangs");
             return s;
     }
 }
