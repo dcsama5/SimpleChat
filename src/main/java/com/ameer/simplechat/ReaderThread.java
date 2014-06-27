@@ -39,7 +39,6 @@ public class ReaderThread implements Runnable {
         String message = null;
         while(true) {
         try {
-                System.out.println("HI");
                 message = reader.readLine();
                 System.out.println(message);
         }

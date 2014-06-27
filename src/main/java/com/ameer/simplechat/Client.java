@@ -25,7 +25,7 @@ public class Client {
     {
         scanner = new Scanner(System.in);
         try{
-            Socket connection = new Socket("192.168.1.2", 13);
+            Socket connection = new Socket("localhost", 13);
             Thread readerThread = new Thread(new ReaderThread(connection));
             readerThread.start();
             OutputStream out = connection.getOutputStream();

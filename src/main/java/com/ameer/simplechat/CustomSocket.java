@@ -40,12 +40,12 @@ public class CustomSocket extends Socket implements Runnable {
     public void initializeStream()
     {
         try {
-        out = this.getOutputStream();
-        printWriter = new PrintWriter(out);
-        in = this.getInputStream();
-        reader = new BufferedReader(new InputStreamReader(in));
-        readerThread = new Thread(this);
-        readerThread.start();
+            out = this.getOutputStream();
+            printWriter = new PrintWriter(out);
+            in = this.getInputStream();
+            reader = new BufferedReader(new InputStreamReader(in));
+            readerThread = new Thread(this);
+            readerThread.start();
         }
         catch(IOException ex)
         {
@@ -58,27 +58,26 @@ public class CustomSocket extends Socket implements Runnable {
         return name;
     }
     
-    public void sendMessage(String message) 
+    public void sendMessage(String message)
     {
         System.out.println("attempting to send message");
         printWriter.println(message);
         printWriter.flush();
     }
-
+    
     public void run() {
         try {
-        while(true)
-        {
-            String message = reader.readLine();
-            System.out.println("recieved message " + this.toString() + " " + message);
-            Server.broadcastMessage(message);
-        }
+            while(true)
+            {
+                String message = reader.readLine();
+                Server.broadcastMessage(message);
+            }
         }
         catch(IOException ex)
         {
             ex.printStackTrace();
         }
     }
-
-  
+    
+    
 }

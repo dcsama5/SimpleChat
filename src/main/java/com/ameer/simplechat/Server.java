@@ -78,20 +78,4 @@ public class Server implements Runnable{
 			}
 		}
 	}
-	
-	public class ServerMessager
-	{
-		private Scanner scanner;
-		
-		public ServerMessager()
-		{
-			scanner = new Scanner(System.in);
-		}
-		
-		public String getMessage()
-		{
-			String message = scanner.nextLine();
-			return message;
-		}
-	}
 }
