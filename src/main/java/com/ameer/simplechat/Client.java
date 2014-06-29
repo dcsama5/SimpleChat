@@ -7,9 +7,6 @@ package com.ameer.simplechat;
 
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
@@ -25,24 +22,24 @@ public class Client {
     {
         scanner = new Scanner(System.in);
         try{
-            Socket connection = new Socket("192.168.1.2", 13);
-            Thread readerThread = new Thread(new ReaderThread(connection));
-            readerThread.start();
-            OutputStream out = connection.getOutputStream();
-            PrintWriter printer = new PrintWriter(out);
-            String name = JOptionPane.showInputDialog(null, "Enter name for session");
+            String name = JOptionPane.showInputDialog(null, "ENTER NAME TO CONNECT WITH");
+            CustomSocket connection = new CustomSocket("192.168.1.2", 13, name);
+            connection.initializeStream();
+            //first message invoking the first read line statement from run thread
+            connection.getWriter().println(name);
+            connection.getWriter().flush();
+            
             String message;
+            connection.runInputStream();
             do
             {
-                System.out.println("write the message");
+                System.out.println("Write your message");
                 message = scanner.nextLine();
-                if(connection.isClosed())
-                    System.out.println("closed");
-                printer.println(name+":"+message);
-                printer.flush();
-                System.out.println("Sent the message");
+                connection.sendMessage(connection.getName()+":"+message);
             }
             while(!message.equals("quit"));
+            System.out.println("closing stream");
+            connection.shutDown();
         }
         catch(UnknownHostException uh)
         {

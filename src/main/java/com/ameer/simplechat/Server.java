@@ -7,6 +7,7 @@ package com.ameer.simplechat;
 
 
 import java.io.IOException;
+import java.net.Socket;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -18,7 +19,6 @@ import java.util.Set;
 */
 public class Server implements Runnable{
 	
-	CustomSocket connection;
 	CustomServerSocket server;
 	static Set<CustomSocket> sockets = new HashSet<CustomSocket>();
 	
@@ -56,11 +56,13 @@ public class Server implements Runnable{
 		System.out.println("Trying to broadcast message");
 		while(it.hasNext()){
 			CustomSocket socket = it.next();
-			System.out.println(socket.getName() + ":"+message);
 			if(!socket.isClosed())
-				socket.sendMessage(socket.toString() + " " + message);
+				socket.sendMessage(message);
 			else
-				sockets.remove(socket);
+                        {
+                            System.out.println("");
+                            it.remove();
+                        }
 		}
 	}
 	
@@ -68,30 +70,16 @@ public class Server implements Runnable{
 		while(true)
 		{
 			try {
-				connection = (CustomSocket) server.accept();
+				CustomSocket connection = (CustomSocket) server.accept();
 				connection.initializeStream();
+                                connection.setName();
+                                connection.runInputStream();
 				sockets.add(connection);
 			}
 			catch(Exception ex)
 			{
 				ex.printStackTrace();
 			}
-		}
-	}
-	
-	public class ServerMessager
-	{
-		private Scanner scanner;
-		
-		public ServerMessager()
-		{
-			scanner = new Scanner(System.in);
-		}
-		
-		public String getMessage()
-		{
-			String message = scanner.nextLine();
-			return message;
 		}
 	}
 }

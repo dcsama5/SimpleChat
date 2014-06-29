@@ -16,6 +16,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketImpl;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -37,6 +39,12 @@ public class CustomSocket extends Socket implements Runnable {
         super();
     }
     
+    public CustomSocket(String host, int port, String name) throws IOException
+    {
+        super(host, port);
+        this.name = name;
+    }
+    
     public void initializeStream()
     {
         try {
@@ -45,12 +53,18 @@ public class CustomSocket extends Socket implements Runnable {
         in = this.getInputStream();
         reader = new BufferedReader(new InputStreamReader(in));
         readerThread = new Thread(this);
-        readerThread.start();
         }
         catch(IOException ex)
         {
+            System.out.println("Error when initialising the stream");
             ex.printStackTrace();
         }
+    }
+    
+    public void shutDown() throws IOException {
+        out.close();
+        in.close();
+        this.close();
     }
     
     public String getName()
@@ -58,9 +72,22 @@ public class CustomSocket extends Socket implements Runnable {
         return name;
     }
     
+    public void runInputStream()
+    {
+        readerThread.start();
+    }
+    public PrintWriter getWriter()
+    {
+        return this.printWriter;
+    }
+    public void setName() throws IOException {
+        String name = reader.readLine();
+        System.out.println("assigning name to " + name);
+        this.name = name;}
+    
     public void sendMessage(String message) 
     {
-        System.out.println("attempting to send message");
+        System.out.println("sending message : " + message);
         printWriter.println(message);
         printWriter.flush();
     }
@@ -70,13 +97,19 @@ public class CustomSocket extends Socket implements Runnable {
         while(true)
         {
             String message = reader.readLine();
-            System.out.println("recieved message " + this.toString() + " " + message);
+            if(!message.equals("shutdown")){
+                System.out.println(message);
+            }
+            else
+            { shutDown();
+            break;
+            }
             Server.broadcastMessage(message);
         }
         }
         catch(IOException ex)
         {
-            ex.printStackTrace();
+           System.out.println(this.getName() + " has left the server");
         }
     }
 
