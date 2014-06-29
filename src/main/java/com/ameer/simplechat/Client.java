@@ -28,7 +28,6 @@ public class Client {
             //first message invoking the first read line statement from run thread
             connection.getWriter().println(name);
             connection.getWriter().flush();
-            
             String message;
             connection.runInputStream();
             do
