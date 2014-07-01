@@ -36,7 +36,7 @@ public class CustomServerSocket extends ServerSocket{
             System.out.println("not bound");
             throw new SocketException("Socket is not bound yet");
         }
-            Socket s = new CustomSocket();
+            Socket s = new ServerSocketImpl();
             implAccept(s);
             return s;
     }

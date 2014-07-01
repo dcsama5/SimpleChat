@@ -80,6 +80,7 @@ public class CustomSocket extends Socket implements Runnable {
     {
         return this.printWriter;
     }
+    
     public void setName() throws IOException {
         String name = reader.readLine();
         System.out.println("assigning name to " + name);
@@ -97,11 +98,14 @@ public class CustomSocket extends Socket implements Runnable {
         while(true)
         {
             String message = reader.readLine();
+            String[] array = message.split(":");
+            message = array[1];
             if(!message.equals("shutdown")){
-                System.out.println(message);
+                System.out.println("not shutting down " + message);
             }
             else
-            { shutDown();
+            {
+            shutDown();
             break;
             }
             Server.broadcastMessage(message);
@@ -110,6 +114,7 @@ public class CustomSocket extends Socket implements Runnable {
         catch(IOException ex)
         {
            System.out.println(this.getName() + " has left the server");
+           //Might want 
         }
     }
 

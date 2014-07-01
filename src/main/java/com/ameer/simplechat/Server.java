@@ -20,8 +20,8 @@ import java.util.Set;
 public class Server implements Runnable{
 	
 	CustomServerSocket server;
-	static Set<CustomSocket> sockets = new HashSet<CustomSocket>();
-	
+	static Set<ServerSocketImpl> sockets = new HashSet<ServerSocketImpl>();
+	static int count = 0;
 	public Server() throws IOException
 	{
 		try {
@@ -43,7 +43,7 @@ public class Server implements Runnable{
                         String message = scanner.nextLine();
                         while(!message.equals("quit"))
                         {
-                            broadcastMessage("Server:"+message);
+                            broadcastMessage("Server:", message);
                             message = scanner.nextLine();
                         }
 		}
@@ -51,14 +51,16 @@ public class Server implements Runnable{
 		{ }
 	}
 	
-	public static void broadcastMessage(String message) {
-		Iterator<CustomSocket> it = sockets.iterator();
+	public static void broadcastMessage(String user, String message) {
+            System.out.println(count + " "+  sockets.size());
+		Iterator<ServerSocketImpl> it = sockets.iterator();
 		System.out.println("Trying to broadcast message");
 		while(it.hasNext()){
-			CustomSocket socket = it.next();
-			if(!socket.isClosed())
-				socket.sendMessage(message);
-			else
+			ServerSocketImpl socket = it.next();
+                        System.out.println("name of user passed:"+user + " \t"+ "socket name:"+socket.getName());
+			if(!socket.isClosed() && !socket.getName().equalsIgnoreCase(user))
+                        {System.out.println("hit");socket.sendMessage(user+":"+message);}
+                        else if(socket.isClosed())
                         {
                             System.out.println("");
                             it.remove();
@@ -70,11 +72,12 @@ public class Server implements Runnable{
 		while(true)
 		{
 			try {
-				CustomSocket connection = (CustomSocket) server.accept();
+				ServerSocketImpl connection = (ServerSocketImpl) server.accept();
 				connection.initializeStream();
                                 connection.setName();
                                 connection.runInputStream();
 				sockets.add(connection);
+                                count++;
 			}
 			catch(Exception ex)
 			{

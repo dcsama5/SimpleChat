@@ -23,7 +23,7 @@ public class Client {
         scanner = new Scanner(System.in);
         try{
             String name = JOptionPane.showInputDialog(null, "ENTER NAME TO CONNECT WITH");
-            CustomSocket connection = new CustomSocket("192.168.1.2", 13, name);
+            ClientSocket connection = new ClientSocket("192.168.1.2", 13, name);
             connection.initializeStream();
             //first message invoking the first read line statement from run thread
             connection.getWriter().println(name);
@@ -34,9 +34,10 @@ public class Client {
             {
                 System.out.println("Write your message");
                 message = scanner.nextLine();
-                connection.sendMessage(connection.getName()+":"+message);
+                System.out.println(connection.getName() + ":"+message);
+                connection.sendMessage(message);
             }
-            while(!message.equals("quit"));
+            while(!message.equals("shutdown"));
             System.out.println("closing stream");
             connection.shutDown();
         }
