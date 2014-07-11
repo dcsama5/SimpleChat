@@ -54,19 +54,30 @@ public class Server implements Runnable{
 	public static void broadcastMessage(String user, String message) {
             System.out.println(count + " "+  sockets.size());
 		Iterator<ServerSocketImpl> it = sockets.iterator();
-		System.out.println("Trying to broadcast message");
+                printConnectedSockets();
 		while(it.hasNext()){
 			ServerSocketImpl socket = it.next();
-                        System.out.println("name of user passed:"+user + " \t"+ "socket name:"+socket.getName());
-			if(!socket.isClosed() && !socket.getName().equalsIgnoreCase(user))
-                        {System.out.println("hit");socket.sendMessage(user+":"+message);}
-                        else if(socket.isClosed())
+			if(!socket.getName().equalsIgnoreCase(user))
                         {
-                            System.out.println("");
-                            it.remove();
+                            if(!socket.isClosed())
+                            {
+                                socket.sendMessage(user+":"+message);
+                            }
                         }
+                        
 		}
 	}
+        
+        public static void removeConnection(Socket sock) {
+           sockets.remove(sock);
+        }
+        
+       private static void printConnectedSockets() {
+           for(ServerSocketImpl impl : sockets)
+           {
+              System.out.println(impl.isClosed() ? impl.getName()+" closed" : impl.getName() +" open");
+           }
+       }
 	
 	public void run() {
 		while(true)
@@ -76,6 +87,7 @@ public class Server implements Runnable{
 				connection.initializeStream();
                                 connection.setName();
                                 connection.runInputStream();
+                                System.out.println(connection.getName() +" has connected");
 				sockets.add(connection);
                                 count++;
 			}

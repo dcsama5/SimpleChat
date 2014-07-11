@@ -23,7 +23,7 @@ public class Client {
         scanner = new Scanner(System.in);
         try{
             String name = JOptionPane.showInputDialog(null, "ENTER NAME TO CONNECT WITH");
-            ClientSocket connection = new ClientSocket("192.168.1.2", 13, name);
+            ClientSocket connection = new ClientSocket("192.168.1.10", 13, name);
             connection.initializeStream();
             //first message invoking the first read line statement from run thread
             connection.getWriter().println(name);

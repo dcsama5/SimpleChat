@@ -18,21 +18,19 @@ public class ServerSocketImpl extends AbstractSocket {
     public void setName() throws IOException {
         String name = super.reader.readLine();
         super.name = name;
-                System.out.println("HIT FOR NAME" +super.getName());
-
     }
     @Override
     public void run() {
         try {
             while(true) {
                 String message = super.reader.readLine();
-                System.out.println("THIS MESSAGE IS "+message);
                 if(!message.equals("shutdown"))
-                    System.out.println(message);
+                    System.out.println(this.getName()+":"+message);
                 else
                 {
                     super.shutDown();
-                    System.out.println("trying to break");
+                    System.out.println(this.getName()+ " has shut the connection");
+                    Server.removeConnection(this);
                     break;
                 }
                 Server.broadcastMessage(this.getName(), message);
